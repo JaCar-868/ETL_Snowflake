@@ -88,7 +88,7 @@ output_path = 'hdfs:///user/hadoop/transformed_data'
 spark-submit spark_etl_pipeline.py
 
 ## License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/JaCar-868/Disease-Progression/blob/main/LICENSE) file for details.
 
 ## Contribution Guidelines
 Contributions are welcome! Please read the CONTRIBUTING.md file for guidelines on how to contribute to this project.
