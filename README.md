@@ -1,91 +1,104 @@
-# ETL_Snowflake
-This repository contains a sample ETL (Extract, Transform, Load) pipeline using Python, SQL, and Spark. The project demonstrates how to extract data from various sources, transform it, and load it into a Snowflake data warehouse.
+## ETL_Snowflake
 
-## Project Description
+This repository provides a configurable, production-ready ETL pipeline in Python. It extracts data from a CSV file, performs flexible transformations, and loads it into a Snowflake data warehouse with structured logging and a CLI interface.
 
-The ETL pipeline involves the following steps:
-1. **Extract**: Read data from a CSV file.
-2. **Transform**: Process the data using Pandas.
-3. **Load**: Insert the transformed data into a Snowflake table.
+## Features
+
+Chunked extraction for large CSV files via pandas.read_csv(chunksize=…)
+
+Flexible transformations: drop or fill missing values
+
+Secure Snowflake connection through environment variables or a YAML config file
+
+Structured logging using Python’s logging module
+
+Command-line interface with argparse and an __main__ guard
+
+Configurable via a config.yaml file
 
 ## Prerequisites
 
-To run this project, you need the following:
-- A Snowflake account.
-- Python 3.6 or higher.
-- Required Python libraries: `pandas`, `snowflake-connector-python`.
-- Access to a PostgreSQL database (for the SQL example).
-- Spark installation (for the Spark example).
+Python 3.6 or higher
 
-## Setup
+Snowflake account with appropriate privileges
 
-1. Clone the repository:
-   (open command line tool)
-   
-   git clone https://github.com/yourusername/etl-pipeline-project.git
-   cd etl-pipeline-project
-   
-2. Install the required Python libraries:
+## Python libraries:
 
-pip install pandas snowflake-connector-python
+pandas
 
-3. Set up your Snowflake connection parameters in a config.json file:
+PyYAML
 
-{
-    "user": "YOUR_USER",
-    "password": "YOUR_PASSWORD",
-    "account": "YOUR_ACCOUNT",
-    "warehouse": "YOUR_WAREHOUSE",
-    "database": "YOUR_DATABASE",
-    "schema": "YOUR_SCHEMA"
-}
+snowflake-connector-python
+
+## Installation
+
+Clone the repository
+
+git clone https://github.com/JaCar-868/ETL_Snowflake.git
+cd ETL_Snowflake
+
+(Optional) Create and activate a virtual environment:
+
+python3 -m venv venv
+source venv/bin/activate
+
+## Install dependencies
+
+pip install -r requirements.txt
+
+## Configuration
+
+Create a config.yaml file at the project root. Example:
+
+csv_path: data/input.csv       # Path to your CSV
+
+# Target Snowflake table name
+table_name: MY_TABLE
+
+# Optional: number of rows per chunk (omit or set null to read all at once)
+chunk_size: 5000
+
+transform:
+  # Drop rows containing any missing values
+  drop_missing: true
+  # Or fill missing values with a constant (e.g. "UNKNOWN")
+  fill_missing_value: null
+
+snowflake:
+  user: YOUR_USER              # or set SNOWFLAKE_USER env var
+  password: YOUR_PASSWORD      # or set SNOWFLAKE_PASSWORD env var
+  account: YOUR_ACCOUNT        # or set SNOWFLAKE_ACCOUNT env var
+  warehouse: YOUR_WAREHOUSE
+  database: YOUR_DATABASE
+  schema: YOUR_SCHEMA
+
+Tip: Any user, password, or account fields in config.yaml will be overridden by the corresponding environment variables.
 
 ## Usage
-Python-Based ETL Pipeline
-This pipeline extracts data from a CSV file, transforms it using Pandas, and loads it into a Snowflake table.
 
-1. Modify the etl_pipeline.py script with the path to your CSV file and table name:
+Run the pipeline with:
 
-file_path = 'data.csv'
-table_name = 'TRANSFORMED_DATA'
+python ETL_Python_snowflake.py --config config.yaml
 
-2. Run the ETL pipeline:
+View help and available flags:
 
-python etl_pipeline.py
+python ETL_Python_snowflake.py -h
 
-## SQL-Based ETL Pipeline
-This pipeline extracts data from one PostgreSQL table, transforms it using SQL queries, and loads it into another PostgreSQL table.
+## Logging
 
-Run the SQL queries in your PostgreSQL database:
+By default, logs are printed to the console at the INFO level. To change verbosity, set the LOG_LEVEL environment variable:
 
--- Extract
-CREATE TABLE extracted_data AS
-SELECT * FROM source_table;
+export LOG_LEVEL=DEBUG
 
--- Transform
-CREATE TABLE transformed_data AS
-SELECT 
-    id, 
-    UPPER(name) AS name, 
-    date_of_birth 
-FROM extracted_data
-WHERE date_of_birth IS NOT NULL;
+## Testing
 
--- Load
-INSERT INTO target_table
-SELECT * FROM transformed_data;
+Unit tests are written with pytest. To run all tests:
 
-## Spark-Based ETL Pipeline
-This pipeline extracts data from a JSON file, transforms it using PySpark, and loads it into HDFS.
+pytest tests/
 
-1. Modify the spark_etl_pipeline.py script with the path to your JSON file and HDFS output path:
+## Contributing
 
-file_path = 'data.json'
-output_path = 'hdfs:///user/hadoop/transformed_data'
-
-2. Run the ETL pipeline:
-
-spark-submit spark_etl_pipeline.py
+Contributions are welcome! Please read CONTRIBUTING.md for guidelines.
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/JaCar-868/Disease-Progression/blob/main/LICENSE) file for details.
